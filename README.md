@@ -33,7 +33,7 @@ The following environment variables must be set:
 import { Limiter } from 'ts-limiter';
 
 // Initialize SDK with S3 bucket containing the feature matrix and usage tracking data
-client = new Limiter('my-s3-bucket', 'my-project-id');
+const client = new Limiter('my-s3-bucket', 'my-project-id');
 
 // Check if a feature is within limit
 if (await client.feature('my-feature', 'user-id')) {

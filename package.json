@@ -17,6 +17,7 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.54.1"
+    "@aws-sdk/client-s3": "^3.54.1",
+    "tslog": "^3.3.2"
   }
 }
