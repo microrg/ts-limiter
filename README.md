@@ -45,4 +45,10 @@ await client.increment('my-feature', 'user-id');
 
 // Set usage to some value.
 await client.set('my-feature', 'user-id', 5);
+
+// Get feature matrix for the project
+const featureMatrix = await client.featureMatrix();
+
+// Get user's usage data
+const usage = await client.usage('5a8a1ca3-aee8-4a96-9bb4-673442728f2e');
 ```

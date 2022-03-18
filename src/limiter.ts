@@ -140,4 +140,22 @@ export class Limiter {
       throw err;
     }
   }
+
+  public async featureMatrix(): Promise<FeatureMatrix | void> {
+    const featureMatrix = await this.getFeatureMatrix();
+    if (!featureMatrix) {
+      log.error('Failed to fetch feature matrix');
+      return;
+    }
+    return featureMatrix;
+  }
+
+  public async usage(userId: string): Promise<FeatureUsage | void> {
+    const featureUsage = await this.getFeatureUsage(userId);
+    if (!featureUsage) {
+      log.error('Failed to fetch feature usage');
+      return;
+    }
+    return featureUsage;
+  }
 }

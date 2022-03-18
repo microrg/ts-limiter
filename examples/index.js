@@ -16,4 +16,12 @@
 
   // Set usage to some value.
   await client.set('p1f2', '5a8a1ca3-aee8-4a96-9bb4-673442728f2e', 5);
+
+  // Get feature matrix for the project
+  const featureMatrix = await client.featureMatrix();
+  console.log(JSON.stringify(featureMatrix));
+
+  // Get user's usage data
+  const usage = await client.usage('5a8a1ca3-aee8-4a96-9bb4-673442728f2e');
+  console.log(JSON.stringify(usage));
 })();
