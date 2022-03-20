@@ -25,7 +25,7 @@ export class Limiter {
       }
       return JSON.parse(s3ResponseBody);
     } catch (err: any) {
-      switch (err.code) {
+      switch (err.Code) {
         case 'NoSuchBucket':
           log.error('Bucket does not exist');
           break;
@@ -48,7 +48,7 @@ export class Limiter {
       }
       return JSON.parse(s3ResponseBody);
     } catch (err: any) {
-      if (err.code === 'NoSuchKey') {
+      if (err.Code === 'NoSuchKey') {
         log.info(`Creating feature usage json for user ${userId}`);
         const featureUsage = {
           user_id: userId,
