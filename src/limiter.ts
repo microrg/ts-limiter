@@ -88,7 +88,7 @@ export class Limiter {
               return true;
             }
             if (featureUsage.usage[featureId]) {
-              return featureUsage.usage[featureId] <= feature.value;
+              return featureUsage.usage[featureId] < feature.value;
             }
           }
         }
