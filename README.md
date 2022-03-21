@@ -33,18 +33,18 @@ The following environment variables must be set:
 import { Limiter } from 'ts-limiter';
 
 // Initialize SDK with S3 bucket containing the feature matrix and usage tracking data
-const client = new Limiter('my-s3-bucket', 'my-project-id');
+const client = new Limiter('s3-bucket', 'project-id');
 
 // Check if a feature is within limit
-if (await client.feature('my-feature', 'user-id')) {
+if (await client.feature('plan-name', 'feature-name', 'user-id')) {
   // Pass
 }
 
 // Increment usage by 1.
-await client.increment('my-feature', 'user-id');
+await client.increment('feature-name', 'user-id');
 
 // Set usage to some value.
-await client.set('my-feature', 'user-id', 5);
+await client.set('feature-name', 'user-id', 5);
 
 // Get feature matrix for the project
 const featureMatrix = await client.featureMatrix();

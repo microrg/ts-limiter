@@ -5,7 +5,9 @@
   const client = new Limiter('limiter-test', 'my-project');
 
   // Check if a feature is within limit
-  if (await client.feature('p1f2', '5a8a1ca3-aee8-4a96-9bb4-673442728f2e')) {
+  if (
+    await client.feature('p1', 'p1f2', '5a8a1ca3-aee8-4a96-9bb4-673442728f2e')
+  ) {
     console.log('Pass');
   } else {
     console.log('Fail');

@@ -60,7 +60,11 @@ export class Limiter {
     }
   }
 
-  public async feature(featureId: string, userId: string): Promise<boolean> {
+  public async feature(
+    planId: string,
+    featureId: string,
+    userId: string
+  ): Promise<boolean> {
     const featureMatrix = await this.getFeatureMatrix();
     if (!featureMatrix) {
       log.error('Failed to fetch feature matrix');
@@ -72,18 +76,20 @@ export class Limiter {
       return false;
     }
 
-    for (const plan of featureMatrix.plans) {
-      for (const feature of plan.features) {
-        if (feature.feature_id === featureId) {
-          if (!feature.enabled) {
-            log.info(`Feature ${featureId} disabled, skipping check`);
-            return true;
-          }
-          if (feature.type === 'boolean' && feature.value === 1) {
-            return true;
-          }
-          if (featureUsage.usage[featureId]) {
-            return featureUsage.usage[featureId] <= feature.value;
+    for (let plan of featureMatrix.plans) {
+      if (plan.plan_id === planId) {
+        for (let feature of plan.features) {
+          if (feature.feature_id === featureId) {
+            if (!feature.enabled) {
+              log.info(`Feature ${featureId} disabled, skipping check`);
+              return true;
+            }
+            if (feature.type === 'boolean' && feature.value === 1) {
+              return true;
+            }
+            if (featureUsage.usage[featureId]) {
+              return featureUsage.usage[featureId] <= feature.value;
+            }
           }
         }
       }
