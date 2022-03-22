@@ -25,6 +25,7 @@ export class Limiter {
       }
       return JSON.parse(s3ResponseBody);
     } catch (err: any) {
+      log.error(err);
       switch (err.Code) {
         case 'NoSuchBucket':
           log.error('Bucket does not exist');
@@ -48,13 +49,19 @@ export class Limiter {
       }
       return JSON.parse(s3ResponseBody);
     } catch (err: any) {
+      log.error(err);
       if (err.Code === 'NoSuchKey') {
         log.info(`Creating feature usage json for user ${userId}`);
         const featureUsage = {
           user_id: userId,
           usage: {},
         };
-        await putPublicReadJsonObject(this.s3Bucket, key, featureUsage);
+        try {
+          await putPublicReadJsonObject(this.s3Bucket, key, featureUsage);
+        } catch (err) {
+          log.error(err);
+          log.error('Failed to create feature usage');
+        }
         return featureUsage;
       }
     }
@@ -116,6 +123,7 @@ export class Limiter {
         featureUsage
       );
     } catch (err) {
+      log.error(err);
       log.error('Failed to update feature usage');
       throw err;
     }
@@ -142,6 +150,7 @@ export class Limiter {
         featureUsage
       );
     } catch (err) {
+      log.error(err);
       log.error('Failed to update feature usage');
       throw err;
     }
