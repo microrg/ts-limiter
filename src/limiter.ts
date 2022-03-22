@@ -4,18 +4,34 @@ import { FeatureMatrix, FeatureUsage } from './typings';
 
 const log: Logger = new Logger({ name: 'limiter' });
 
+interface AwsCredentials {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
+  s3Bucket: string;
+}
 export class Limiter {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
   s3Bucket: string;
   projectId: string;
 
-  constructor(bucket: string, projectId: string) {
-    this.s3Bucket = bucket;
+  constructor(awsCredentials: AwsCredentials, projectId: string) {
+    const { accessKeyId, secretAccessKey, region, s3Bucket } = awsCredentials;
+    this.accessKeyId = accessKeyId;
+    this.secretAccessKey = secretAccessKey;
+    this.region = region;
+    this.s3Bucket = s3Bucket;
     this.projectId = projectId;
   }
 
   private async getFeatureMatrix(): Promise<FeatureMatrix | void> {
     try {
       const resp = await getObject(
+        this.accessKeyId,
+        this.secretAccessKey,
+        this.region,
         this.s3Bucket,
         `${this.projectId}/feature_matrix.json`
       );
@@ -42,7 +58,13 @@ export class Limiter {
   private async getFeatureUsage(userId: string): Promise<FeatureUsage | void> {
     const key = `${this.projectId}/users/${userId}.json`;
     try {
-      const resp = await getObject(this.s3Bucket, key);
+      const resp = await getObject(
+        this.accessKeyId,
+        this.secretAccessKey,
+        this.region,
+        this.s3Bucket,
+        key
+      );
       let s3ResponseBody = '';
       for await (const chunk of resp.Body) {
         s3ResponseBody += chunk;
@@ -57,7 +79,14 @@ export class Limiter {
           usage: {},
         };
         try {
-          await putPublicReadJsonObject(this.s3Bucket, key, featureUsage);
+          await putPublicReadJsonObject(
+            this.accessKeyId,
+            this.secretAccessKey,
+            this.region,
+            this.s3Bucket,
+            key,
+            featureUsage
+          );
         } catch (err) {
           log.error(err);
           log.error('Failed to create feature usage');
@@ -118,6 +147,9 @@ export class Limiter {
 
     try {
       await putPublicReadJsonObject(
+        this.accessKeyId,
+        this.secretAccessKey,
+        this.region,
         this.s3Bucket,
         `${this.projectId}/users/${userId}.json`,
         featureUsage
@@ -145,6 +177,9 @@ export class Limiter {
 
     try {
       await putPublicReadJsonObject(
+        this.accessKeyId,
+        this.secretAccessKey,
+        this.region,
         this.s3Bucket,
         `${this.projectId}/users/${userId}.json`,
         featureUsage

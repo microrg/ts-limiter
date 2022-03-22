@@ -23,17 +23,17 @@ yarn add ts-limiter
 
 ## Quick Usage
 
-The following environment variables must be set:
-
-- `LIMITER_AWS_ACCESS_KEY_ID`
-- `LIMITER_AWS_SECRET_ACCESS_KEY`
-- `LIMITER_AWS_DEFAULT_REGION`
-
 ```typescript
 import { Limiter } from 'ts-limiter';
 
 // Initialize SDK with S3 bucket containing the feature matrix and usage tracking data
-const client = new Limiter('s3-bucket', 'project-id');
+const awsCredentials = {
+  s3Bucket: 's3-bucket',
+  region: 'us-east-1',
+  accessKeyId: 'access-key-id',
+  secretAccessKey: 'secret-access-key',
+};
+const client = new Limiter(awsCredentials, 'project-id');
 
 // Check if a feature is within limit
 if (await client.feature('plan-name', 'feature-name', 'user-id')) {

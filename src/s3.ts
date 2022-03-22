@@ -4,24 +4,39 @@ import {
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 
-const client = new S3Client({
-  apiVersion: '2006-03-01',
-  credentials: {
-    accessKeyId: process.env.LIMITER_AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.LIMITER_AWS_SECRET_ACCESS_KEY as string,
-  },
-  region: process.env.LIMITER_AWS_DEFAULT_REGION as string,
-});
+function getClient(
+  accessKeyId: string,
+  secretAccessKey: string,
+  region: string
+): S3Client {
+  return new S3Client({
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+    apiVersion: '2006-03-01',
+  });
+}
 
-function getObject(bucket: string, key: string): Promise<any> {
+function getObject(
+  accessKeyId: string,
+  secretAccessKey: string,
+  region: string,
+  bucket: string,
+  key: string
+): Promise<any> {
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: key,
   });
-  return client.send(command);
+  return getClient(accessKeyId, secretAccessKey, region).send(command);
 }
 
 function putPublicReadJsonObject(
+  accessKeyId: string,
+  secretAccessKey: string,
+  region: string,
   bucket: string,
   key: string,
   body: any
@@ -33,7 +48,7 @@ function putPublicReadJsonObject(
     ContentType: 'application/json',
     ACL: 'public-read',
   });
-  return client.send(command);
+  return getClient(accessKeyId, secretAccessKey, region).send(command);
 }
 
 export { getObject, putPublicReadJsonObject };
