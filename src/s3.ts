@@ -6,7 +6,11 @@ import {
 
 const client = new S3Client({
   apiVersion: '2006-03-01',
-  region: process.env.AWS_DEFAULT_REGION,
+  credentials: {
+    accessKeyId: process.env.LIMITER_AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.LIMITER_AWS_SECRET_ACCESS_KEY as string,
+  },
+  region: process.env.LIMITER_AWS_DEFAULT_REGION as string,
 });
 
 function getObject(bucket: string, key: string): Promise<any> {

@@ -25,9 +25,9 @@ yarn add ts-limiter
 
 The following environment variables must be set:
 
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_DEFAULT_REGION`
+- `LIMITER_AWS_ACCESS_KEY_ID`
+- `LIMITER_AWS_SECRET_ACCESS_KEY`
+- `LIMITER_AWS_DEFAULT_REGION`
 
 ```typescript
 import { Limiter } from 'ts-limiter';
