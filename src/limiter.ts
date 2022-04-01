@@ -126,12 +126,14 @@ export class Limiter {
             if (featureUsage.usage[featureId]) {
               return featureUsage.usage[featureId] < feature.value;
             }
+            // Feature in plan but undefined on user
+            return true;
           }
         }
       }
     }
 
-    log.info(`Feature ${featureId} not found, deny`);
+    log.info(`Feature ${featureId} not found in any plan, deny.`);
     return false;
   }
 
