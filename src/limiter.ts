@@ -117,8 +117,8 @@ export class Limiter {
         for (let feature of plan.features) {
           if (feature.feature_id === featureId) {
             if (!feature.enabled) {
-              log.info(`Feature ${featureId} disabled, skipping check`);
-              return true;
+              log.info(`Feature ${featureId} disabled, deny.`);
+              return false;
             }
             if (feature.type === 'boolean' && feature.value === 1) {
               return true;
@@ -131,8 +131,8 @@ export class Limiter {
       }
     }
 
-    log.info(`Feature ${featureId} not found`);
-    return true;
+    log.info(`Feature ${featureId} not found, deny`);
+    return false;
   }
 
   public async increment(featureId: string, userId: string): Promise<void> {
