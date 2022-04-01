@@ -123,6 +123,9 @@ export class Limiter {
             if (feature.type === 'boolean' && feature.value === 1) {
               return true;
             }
+            if (feature.type === 'boolean' && feature.value === 0) {
+              return false;
+            }
             if (featureUsage.usage[featureId]) {
               return featureUsage.usage[featureId] < feature.value;
             }
