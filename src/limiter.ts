@@ -120,10 +120,10 @@ export class Limiter {
               log.info(`Feature ${featureId} disabled, deny.`);
               return false;
             }
-            if (feature.type === 'boolean' && feature.value === 1) {
+            if (feature.type === 'Boolean' && feature.value === 1) {
               return true;
             }
-            if (feature.type === 'boolean' && feature.value === 0) {
+            if (feature.type === 'Boolean' && feature.value === 0) {
               return false;
             }
             if (featureUsage.usage[featureId]) {
