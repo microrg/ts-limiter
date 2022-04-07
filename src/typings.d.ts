@@ -12,6 +12,7 @@ interface Features {
   type: string;
   value: number;
   enabled: boolean;
+  soft: boolean;
 }
 
 export interface FeatureUsage {

@@ -117,14 +117,18 @@ export class Limiter {
         for (let feature of plan.features) {
           if (feature.feature_id === featureId) {
             if (!feature.enabled) {
-              log.info(`Feature ${featureId} disabled, deny.`);
-              return false;
+              log.info(`Feature ${featureId} disabled, allow.`);
+              return true;
             }
             if (feature.type === 'Boolean' && feature.value === 1) {
               return true;
             }
             if (feature.type === 'Boolean' && feature.value === 0) {
               return false;
+            }
+            if (feature.soft) {
+              log.info(`Feature ${featureId} is soft, allow.`);
+              return true;
             }
             if (featureUsage.usage[featureId]) {
               return featureUsage.usage[featureId] < feature.value;
