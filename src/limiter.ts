@@ -170,6 +170,34 @@ export class Limiter {
     }
   }
 
+  public async decrement(featureId: string, userId: string): Promise<void> {
+    const featureUsage = await this.getFeatureUsage(userId);
+    if (!featureUsage) {
+      log.error('Failed to fetch feature usage');
+      throw new Error('FeatureUsageNotFound');
+    }
+
+    if (featureUsage.usage[featureId] > 0) {
+      log.info(`Feature ${featureId}, User ${userId}: Decrementing usage`);
+      featureUsage.usage[featureId] -= 1;
+    }
+
+    try {
+      await putPublicReadJsonObject(
+        this.accessKeyId,
+        this.secretAccessKey,
+        this.region,
+        this.s3Bucket,
+        `${this.projectId}/users/${userId}.json`,
+        featureUsage
+      );
+    } catch (err) {
+      log.error(err);
+      log.error('Failed to update feature usage');
+      throw err;
+    }
+  }
+
   public async set(
     featureId: string,
     userId: string,

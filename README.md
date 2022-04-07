@@ -43,6 +43,9 @@ if (await client.feature('plan-name', 'feature-name', 'user-id')) {
 // Increment usage by 1.
 await client.increment('feature-name', 'user-id');
 
+// Decrement usage by 1.
+await client.decrement('feature-name', 'user-id');
+
 // Set usage to some value.
 await client.set('feature-name', 'user-id', 5);
 
