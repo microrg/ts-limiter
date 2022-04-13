@@ -33,7 +33,7 @@ function getObject(
   return getClient(accessKeyId, secretAccessKey, region).send(command);
 }
 
-function putPublicReadJsonObject(
+function putJsonObject(
   accessKeyId: string,
   secretAccessKey: string,
   region: string,
@@ -46,9 +46,8 @@ function putPublicReadJsonObject(
     Key: key,
     Body: JSON.stringify(body),
     ContentType: 'application/json',
-    ACL: 'public-read',
   });
   return getClient(accessKeyId, secretAccessKey, region).send(command);
 }
 
-export { getObject, putPublicReadJsonObject };
+export { getObject, putJsonObject };

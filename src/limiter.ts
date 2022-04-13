@@ -1,5 +1,5 @@
 import { Logger } from 'tslog';
-import { getObject, putPublicReadJsonObject } from './s3';
+import { getObject, putJsonObject } from './s3';
 import { FeatureMatrix, FeatureUsage } from './typings';
 
 const log: Logger = new Logger({ name: 'limiter' });
@@ -79,7 +79,7 @@ export class Limiter {
           usage: {},
         };
         try {
-          await putPublicReadJsonObject(
+          await putJsonObject(
             this.accessKeyId,
             this.secretAccessKey,
             this.region,
@@ -155,7 +155,7 @@ export class Limiter {
     featureUsage.usage[featureId] += 1;
 
     try {
-      await putPublicReadJsonObject(
+      await putJsonObject(
         this.accessKeyId,
         this.secretAccessKey,
         this.region,
@@ -183,7 +183,7 @@ export class Limiter {
     }
 
     try {
-      await putPublicReadJsonObject(
+      await putJsonObject(
         this.accessKeyId,
         this.secretAccessKey,
         this.region,
@@ -213,7 +213,7 @@ export class Limiter {
     featureUsage.usage[featureId] = value;
 
     try {
-      await putPublicReadJsonObject(
+      await putJsonObject(
         this.accessKeyId,
         this.secretAccessKey,
         this.region,
