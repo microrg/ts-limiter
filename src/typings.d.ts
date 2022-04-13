@@ -13,6 +13,7 @@ interface Features {
   value: number;
   enabled: boolean;
   soft: boolean;
+  webhook: Webhook;
 }
 
 export interface FeatureUsage {
@@ -22,4 +23,11 @@ export interface FeatureUsage {
 
 interface Usage {
   [key: string]: number;
+}
+
+interface Webhook {
+  enabled: string;
+  url: string;
+  token: string;
+  threshold: number;
 }

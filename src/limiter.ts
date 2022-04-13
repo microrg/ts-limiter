@@ -1,6 +1,7 @@
 import { Logger } from 'tslog';
 import { getObject, putJsonObject } from './s3';
-import { FeatureMatrix, FeatureUsage } from './typings';
+import { sendWebhook } from './webhook';
+import { FeatureMatrix, FeatureUsage, Webhook } from './typings';
 
 const log: Logger = new Logger({ name: 'limiter' });
 
@@ -10,6 +11,7 @@ interface AwsCredentials {
   region: string;
   s3Bucket: string;
 }
+
 export class Limiter {
   accessKeyId: string;
   secretAccessKey: string;
@@ -96,6 +98,35 @@ export class Limiter {
     }
   }
 
+  private async shouldSendWebhook(
+    featureMatrix: FeatureMatrix,
+    featureUsage: FeatureUsage,
+    featureId: string,
+    userId: string
+  ) {
+    const curr = featureUsage.usage[featureId];
+    for (let plan of featureMatrix.plans) {
+      for (let feature of plan.features) {
+        if (feature.feature_id === featureId) {
+          const hook = feature?.webhook;
+          if (hook && hook.enabled && curr / feature.value > hook.threshold) {
+            log.info(`User ${userId}, triggering webhook: ${hook.url}`);
+            await sendWebhook(
+              hook.url,
+              hook.token,
+              userId,
+              curr,
+              feature.value
+            ).catch((err) => {
+              log.error(`User ${userId}, webhook failed: ${err}`);
+            });
+            log.info(`User ${userId}, webhook triggered: ${hook.url}`);
+          }
+        }
+      }
+    }
+  }
+
   public async feature(
     planId: string,
     featureId: string,
@@ -145,6 +176,11 @@ export class Limiter {
   }
 
   public async increment(featureId: string, userId: string): Promise<void> {
+    const featureMatrix = await this.getFeatureMatrix();
+    if (!featureMatrix) {
+      log.error('Failed to fetch feature matrix');
+      throw new Error('FeatureMatrixNotFound');
+    }
     const featureUsage = await this.getFeatureUsage(userId);
     if (!featureUsage) {
       log.error('Failed to fetch feature usage');
@@ -168,6 +204,13 @@ export class Limiter {
       log.error('Failed to update feature usage');
       throw err;
     }
+
+    await this.shouldSendWebhook(
+      featureMatrix,
+      featureUsage,
+      featureId,
+      userId
+    );
   }
 
   public async decrement(featureId: string, userId: string): Promise<void> {
@@ -203,6 +246,11 @@ export class Limiter {
     userId: string,
     value: number
   ): Promise<void> {
+    const featureMatrix = await this.getFeatureMatrix();
+    if (!featureMatrix) {
+      log.error('Failed to fetch feature matrix');
+      throw new Error('FeatureMatrixNotFound');
+    }
     const featureUsage = await this.getFeatureUsage(userId);
     if (!featureUsage) {
       log.error('Failed to fetch feature usage');
@@ -226,6 +274,13 @@ export class Limiter {
       log.error('Failed to update feature usage');
       throw err;
     }
+
+    await this.shouldSendWebhook(
+      featureMatrix,
+      featureUsage,
+      featureId,
+      userId
+    );
   }
 
   public async featureMatrix(): Promise<FeatureMatrix | void> {
