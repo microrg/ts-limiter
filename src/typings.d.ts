@@ -30,4 +30,5 @@ interface Webhook {
   url: string;
   token: string;
   threshold: number;
+  payload: any;
 }
