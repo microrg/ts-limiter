@@ -190,7 +190,11 @@ export class Limiter {
     }
 
     log.info(`Feature ${featureId}, User ${userId}: Incrementing usage`);
-    featureUsage.usage[featureId] += 1;
+    if (featureUsage.usage[featureId]) {
+      featureUsage.usage[featureId] += 1;
+    } else {
+      featureUsage.usage[featureId] = 1;
+    }
 
     try {
       await putJsonObject(
