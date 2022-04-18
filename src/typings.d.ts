@@ -32,3 +32,36 @@ interface Webhook {
   threshold: number;
   payload: any;
 }
+
+export interface Options {
+  backend: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
+  s3Bucket: string;
+  apiToken: string;
+  backendUrl: string;
+}
+
+// S3 backend options
+export interface S3BackendOptions {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
+  s3Bucket: string;
+}
+
+// Default backend options
+export interface DefaultBackendOptions {
+  apiToken: string;
+  backendUrl: string;
+}
+
+export interface Backend {
+  featureMatrix(): Promise<FeatureMatrix | void>;
+  usage(userId: string): Promise<FeatureUsage | void>;
+  feature(planId: string, featureId: string, userId: string): Promise<boolean>;
+  increment(featureId: string, userId: string): Promise<void>;
+  decrement(featureId: string, userId: string): Promise<void>;
+  set(featureId: string, userId: string, value: number): Promise<void>;
+}

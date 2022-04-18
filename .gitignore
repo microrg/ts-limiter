@@ -1,4 +1,4 @@
 test.sh
 node_modules
 lib
-index.js
+test_*.js

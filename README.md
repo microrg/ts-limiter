@@ -23,18 +23,38 @@ yarn add ts-limiter
 
 ## Quick Usage
 
+### Default Backend
+
+Initialize SDK with the managed storage backend
+
 ```typescript
 import { Limiter } from 'ts-limiter';
 
-// Initialize SDK with S3 bucket containing the feature matrix and usage tracking data
-const awsCredentials = {
+const opts = {
+  backend: 'Default',
+  apiToken: 'api-token',
+};
+const client = new Limiter('project-id', opts);
+```
+
+### S3 Backend
+
+Initialize SDK with a private S3 bucket storage backend
+
+```typescript
+import { Limiter } from 'ts-limiter';
+
+const opts = {
+  backend: 'S3',
   s3Bucket: 's3-bucket',
   region: 'us-east-1',
   accessKeyId: 'access-key-id',
   secretAccessKey: 'secret-access-key',
 };
-const client = new Limiter(awsCredentials, 'project-id');
+const client = new Limiter('project-id', opts);
+```
 
+```typescript
 // Check if a feature is within limit
 if (await client.feature('plan-name', 'feature-name', 'user-id')) {
   // Pass
