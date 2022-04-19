@@ -27,7 +27,7 @@ export class DefaultBackend implements Backend {
     userId: string
   ): Promise<boolean> {
     const resp = await axios.post(
-      `${V1_API}/feature`,
+      `${this.backendUrl}/feature`,
       {
         user_id: userId,
         plan_id: planId,
@@ -46,7 +46,7 @@ export class DefaultBackend implements Backend {
 
   public async increment(featureId: string, userId: string): Promise<void> {
     await axios.post(
-      `${V1_API}/increment`,
+      `${this.backendUrl}/increment`,
       { user_id: userId, feature_id: featureId, project_id: this.projectId },
       {
         headers: {
@@ -59,7 +59,7 @@ export class DefaultBackend implements Backend {
 
   public async decrement(featureId: string, userId: string): Promise<void> {
     await axios.post(
-      `${V1_API}/decrement`,
+      `${this.backendUrl}/decrement`,
       { user_id: userId, feature_id: featureId, project_id: this.projectId },
       {
         headers: {
@@ -76,7 +76,7 @@ export class DefaultBackend implements Backend {
     value: number
   ): Promise<void> {
     await axios.post(
-      `${V1_API}/set`,
+      `${this.backendUrl}/set`,
       {
         value,
         user_id: userId,
@@ -94,7 +94,7 @@ export class DefaultBackend implements Backend {
 
   public async featureMatrix(): Promise<FeatureMatrix | void> {
     const resp = await axios.post(
-      `${V1_API}/feature-matrix`,
+      `${this.backendUrl}/feature-matrix`,
       { project_id: this.projectId },
       {
         headers: {
@@ -108,7 +108,7 @@ export class DefaultBackend implements Backend {
 
   public async usage(userId: string): Promise<FeatureUsage | void> {
     const resp = await axios.post(
-      `${V1_API}/usage`,
+      `${this.backendUrl}/usage`,
       { user_id: userId, project_id: this.projectId },
       {
         headers: {
