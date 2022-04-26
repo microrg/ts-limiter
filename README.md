@@ -1,12 +1,5 @@
 # Limiter TypeScript SDK
 
-Limiter is a subscription limits management platform.
-
-This TypeScript package tracks usage and enforces limits within a TypeScript application.
-
-- Lightweight and fast
-- Relies on S3 for scalability and data availability
-
 ## Installation
 
 With npm:
@@ -39,7 +32,7 @@ const client = new Limiter('project-id', opts);
 
 ### S3 Backend
 
-Initialize SDK with a private S3 bucket storage backend
+Initialize SDK with a private S3 bucket storage
 
 ```typescript
 import { Limiter } from 'ts-limiter';
@@ -54,9 +47,14 @@ const opts = {
 const client = new Limiter('project-id', opts);
 ```
 
+### Available Methods
+
 ```typescript
+// Bind user to a plan
+await client.bind('plan-name', 'user-id');
+
 // Check if a feature is within limit
-if (await client.feature('plan-name', 'feature-name', 'user-id')) {
+if (await client.feature('feature-name', 'user-id')) {
   // Pass
 }
 
@@ -73,5 +71,5 @@ await client.set('feature-name', 'user-id', 5);
 const featureMatrix = await client.featureMatrix();
 
 // Get user's usage data
-const usage = await client.usage('5a8a1ca3-aee8-4a96-9bb4-673442728f2e');
+const usage = await client.usage('user-id');
 ```

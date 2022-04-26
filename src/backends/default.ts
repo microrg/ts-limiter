@@ -21,16 +21,24 @@ export class DefaultBackend implements Backend {
     this.backendUrl = backendUrl || V1_API;
   }
 
-  public async feature(
-    planId: string,
-    featureId: string,
-    userId: string
-  ): Promise<boolean> {
+  public async bind(planId: string, userId: string): Promise<void> {
+    await axios.post(
+      `${this.backendUrl}/bind`,
+      { user_id: userId, plan_id: planId, project_id: this.projectId },
+      {
+        headers: {
+          Authorization: this.apiToken,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  }
+
+  public async feature(featureId: string, userId: string): Promise<boolean> {
     const resp = await axios.post(
       `${this.backendUrl}/feature`,
       {
         user_id: userId,
-        plan_id: planId,
         feature_id: featureId,
         project_id: this.projectId,
       },

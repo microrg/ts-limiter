@@ -18,6 +18,7 @@ interface Features {
 
 export interface FeatureUsage {
   user_id: string;
+  plan_id: string | null;
   usage: Usage;
 }
 
@@ -58,9 +59,10 @@ export interface DefaultBackendOptions {
 }
 
 export interface Backend {
+  bind(planId: string, userId: string): Promise<void>;
   featureMatrix(): Promise<FeatureMatrix | void>;
   usage(userId: string): Promise<FeatureUsage | void>;
-  feature(planId: string, featureId: string, userId: string): Promise<boolean>;
+  feature(featureId: string, userId: string): Promise<boolean>;
   increment(featureId: string, userId: string): Promise<void>;
   decrement(featureId: string, userId: string): Promise<void>;
   set(featureId: string, userId: string, value: number): Promise<void>;

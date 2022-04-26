@@ -1,6 +1,6 @@
 {
   "name": "ts-limiter",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "repository": "git@github.com:microrg/ts-limiter.git",

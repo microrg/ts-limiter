@@ -36,12 +36,12 @@ export class Limiter {
     }
   }
 
-  public async feature(
-    planId: string,
-    featureId: string,
-    userId: string
-  ): Promise<boolean> {
-    return this.backend.feature(planId, featureId, userId);
+  public async bind(planId: string, userId: string): Promise<void> {
+    return this.backend.bind(planId, userId);
+  }
+
+  public async feature(featureId: string, userId: string): Promise<boolean> {
+    return this.backend.feature(featureId, userId);
   }
 
   public async increment(featureId: string, userId: string): Promise<void> {

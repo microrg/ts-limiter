@@ -74,6 +74,7 @@ export class S3Backend implements Backend {
         log.info(`Creating feature usage json for user ${userId}`);
         const featureUsage = {
           user_id: userId,
+          plan_id: null,
           usage: {},
         };
         try {
@@ -94,11 +95,33 @@ export class S3Backend implements Backend {
     }
   }
 
-  public async feature(
-    planId: string,
-    featureId: string,
-    userId: string
-  ): Promise<boolean> {
+  public async bind(planId: string, userId: string): Promise<void> {
+    const featureUsage = await this.getFeatureUsage(userId);
+    if (!featureUsage) {
+      log.error('Failed to fetch feature usage');
+      throw new Error('FeatureUsageNotFound');
+    }
+
+    log.info(`Plan ${planId}, User ${userId}: Binding user to plan`);
+    featureUsage.plan_id = planId;
+
+    try {
+      await putJsonObject(
+        this.accessKeyId,
+        this.secretAccessKey,
+        this.region,
+        this.s3Bucket,
+        `${this.projectId}/users/${userId}.json`,
+        featureUsage
+      );
+    } catch (err) {
+      log.error(err);
+      log.error('Failed to update feature usage');
+      throw err;
+    }
+  }
+
+  public async feature(featureId: string, userId: string): Promise<boolean> {
     const featureMatrix = await this.getFeatureMatrix();
     if (!featureMatrix) {
       log.error('Failed to fetch feature matrix');
@@ -111,7 +134,7 @@ export class S3Backend implements Backend {
     }
 
     for (let plan of featureMatrix.plans) {
-      if (plan.plan_id === planId) {
+      if (plan.plan_id === featureUsage.plan_id) {
         for (let feature of plan.features) {
           if (feature.feature_id === featureId) {
             if (!feature.enabled) {
@@ -138,7 +161,9 @@ export class S3Backend implements Backend {
       }
     }
 
-    log.info(`Feature ${featureId} not found in any plan, deny.`);
+    log.info(
+      `Feature ${featureId} not found in ${featureUsage.plan_id} plan, deny.`
+    );
     return false;
   }
 
