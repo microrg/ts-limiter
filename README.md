@@ -30,7 +30,7 @@ const opts = {
 const client = new Limiter('project-id', opts);
 ```
 
-### S3 Backend
+### S3 Backend (Deprecated)
 
 Initialize SDK with a private S3 bucket storage
 

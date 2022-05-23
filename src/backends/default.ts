@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { log } from '../utils/log';
 
 import {
   Backend,
@@ -49,6 +50,9 @@ export class DefaultBackend implements Backend {
         },
       }
     );
+    if (resp.data.reason) {
+      log.info(resp.data.reason);
+    }
     return resp.data.allow;
   }
 
