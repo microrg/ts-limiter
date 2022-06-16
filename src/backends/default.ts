@@ -56,10 +56,19 @@ export class DefaultBackend implements Backend {
     return resp.data.allow;
   }
 
-  public async increment(featureId: string, userId: string): Promise<void> {
+  public async increment(
+    featureId: string,
+    userId: string,
+    value: number
+  ): Promise<void> {
     await axios.post(
       `${this.backendUrl}/increment`,
-      { user_id: userId, feature_id: featureId, project_id: this.projectId },
+      {
+        user_id: userId,
+        feature_id: featureId,
+        project_id: this.projectId,
+        value,
+      },
       {
         headers: {
           Authorization: this.apiToken,
@@ -69,10 +78,19 @@ export class DefaultBackend implements Backend {
     );
   }
 
-  public async decrement(featureId: string, userId: string): Promise<void> {
+  public async decrement(
+    featureId: string,
+    userId: string,
+    value: number
+  ): Promise<void> {
     await axios.post(
       `${this.backendUrl}/decrement`,
-      { user_id: userId, feature_id: featureId, project_id: this.projectId },
+      {
+        user_id: userId,
+        feature_id: featureId,
+        project_id: this.projectId,
+        value,
+      },
       {
         headers: {
           Authorization: this.apiToken,

@@ -3,6 +3,7 @@ declare module 'ts-limiter' {
     constructor(bucket: string, projectId: string);
     feature(featureId: string, userId: string): Promise<boolean>;
     increment(featureId: string, userId: string): Promise<void>;
+    decrement(featureId: string, userId: string, value: number): Promise<void>;
     set(featureId: string, userId: string, value: number): Promise<void>;
   }
 }

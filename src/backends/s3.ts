@@ -167,7 +167,11 @@ export class S3Backend implements Backend {
     return false;
   }
 
-  public async increment(featureId: string, userId: string): Promise<void> {
+  public async increment(
+    featureId: string,
+    userId: string,
+    value: number
+  ): Promise<void> {
     const featureMatrix = await this.getFeatureMatrix();
     if (!featureMatrix) {
       log.error('Failed to fetch feature matrix');
@@ -179,11 +183,13 @@ export class S3Backend implements Backend {
       throw new Error('FeatureUsageNotFound');
     }
 
-    log.info(`Feature ${featureId}, User ${userId}: Incrementing usage`);
+    log.info(
+      `Feature ${featureId}, User ${userId}: Incrementing usage by ${value}`
+    );
     if (featureUsage.usage[featureId]) {
-      featureUsage.usage[featureId] += 1;
+      featureUsage.usage[featureId] += value;
     } else {
-      featureUsage.usage[featureId] = 1;
+      featureUsage.usage[featureId] = value;
     }
 
     try {
@@ -204,7 +210,11 @@ export class S3Backend implements Backend {
     await shouldSendWebhook(featureMatrix, featureUsage, featureId, userId);
   }
 
-  public async decrement(featureId: string, userId: string): Promise<void> {
+  public async decrement(
+    featureId: string,
+    userId: string,
+    value: number
+  ): Promise<void> {
     const featureUsage = await this.getFeatureUsage(userId);
     if (!featureUsage) {
       log.error('Failed to fetch feature usage');
@@ -212,8 +222,10 @@ export class S3Backend implements Backend {
     }
 
     if (featureUsage.usage[featureId] > 0) {
-      log.info(`Feature ${featureId}, User ${userId}: Decrementing usage`);
-      featureUsage.usage[featureId] -= 1;
+      log.info(
+        `Feature ${featureId}, User ${userId}: Decrementing usage by ${value}`
+      );
+      featureUsage.usage[featureId] -= value;
     }
 
     try {

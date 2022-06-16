@@ -63,7 +63,7 @@ export interface Backend {
   featureMatrix(): Promise<FeatureMatrix | void>;
   usage(userId: string): Promise<FeatureUsage | void>;
   feature(featureId: string, userId: string): Promise<boolean>;
-  increment(featureId: string, userId: string): Promise<void>;
-  decrement(featureId: string, userId: string): Promise<void>;
+  increment(featureId: string, userId: string, value: number): Promise<void>;
+  decrement(featureId: string, userId: string, value: number): Promise<void>;
   set(featureId: string, userId: string, value: number): Promise<void>;
 }

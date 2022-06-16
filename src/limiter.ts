@@ -44,12 +44,20 @@ export class Limiter {
     return this.backend.feature(featureId, userId);
   }
 
-  public async increment(featureId: string, userId: string): Promise<void> {
-    return this.backend.increment(featureId, userId);
+  public async increment(
+    featureId: string,
+    userId: string,
+    value: number = 1
+  ): Promise<void> {
+    return this.backend.increment(featureId, userId, value);
   }
 
-  public async decrement(featureId: string, userId: string): Promise<void> {
-    return this.backend.decrement(featureId, userId);
+  public async decrement(
+    featureId: string,
+    userId: string,
+    value: number = 1
+  ): Promise<void> {
+    return this.backend.decrement(featureId, userId, value);
   }
 
   public async set(
